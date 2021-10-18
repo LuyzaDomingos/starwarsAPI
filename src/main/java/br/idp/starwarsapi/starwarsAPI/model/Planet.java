@@ -16,27 +16,23 @@ public class Planet {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	@NotEmpty
-	private String namePlanet;
+	
+	private String name;
 
-	@NotNull
-	@NotEmpty
+	
 	private String climate;
 
-	@NotNull
-	@NotEmpty
+	
 	private String terrain;
 
-	@NotNull
-	@NotEmpty
-	private Integer numberFilms;
+	
+//	private Integer numberFilms;
 
 	public Planet() {
 	}
 
-	public Planet(String namePlanet, String climate, String terrain) {
-		this.namePlanet = namePlanet;
+	public Planet(String name, String climate, String terrain) {
+		this.name = name;
 		this.climate = climate;
 		this.terrain = terrain;
 	}
@@ -74,12 +70,12 @@ public class Planet {
 		this.id = id;
 	}
 
-	public String getNamePlanet() {
-		return namePlanet;
+	public String getName() {
+		return name;
 	}
 
-	public void setNamePlanet(String namePlanet) {
-		this.namePlanet = namePlanet;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getClimate() {
@@ -98,12 +94,12 @@ public class Planet {
 		this.terrain = terrain;
 	}
 
-	public Integer getNumberFilms() {
-		return numberFilms;
-	}
-
-	public void setNumberFilms(Integer numberFilms) {
-		this.numberFilms = numberFilms;
-	}
+//	public Integer getNumberFilms() {
+//		return numberFilms;
+//	}
+//
+//	public void setNumberFilms(Integer numberFilms) {
+//		this.numberFilms = numberFilms;
+//	}
 
 }

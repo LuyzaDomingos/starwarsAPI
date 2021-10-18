@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,12 +29,10 @@ import br.idp.starwarsapi.starwarsAPI.model.SwApiPlanet;
 @Service
 public class SwApiService {
 
-	@Autowired
+//	@Autowired
 	private RestTemplate restTemplate;
 
-//	https://swapi.co/api
-//	@Value("")
-	private String SW_URL;
+	private String SW_URL = "https://swapi.co/api";
 
 	public List<Planet> getAllPlanets() throws ConnectionException {
 		if (!checkConnection()) {
@@ -76,29 +75,29 @@ public class SwApiService {
 
 	}
 	
-	public int countFilmsByPlanet(String planetName) throws IOException {
-		if (!checkConnection())
-			throw new ConnectionException("Not connection detection");
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("user-agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-
-		ResponseEntity<String> response = restTemplate.exchange(SW_URL + "/planets?search=" + planetName,
-				HttpMethod.GET, entity, String.class);
-
-		JsonNode root = new ObjectMapper().readTree(response.getBody());
-
-		if (root != null && root.get("count").asLong() > 0) {
-			JsonNode results = root.get("results");
-			JsonNode planet = results.get(0);
-			JsonNode films = planet.get("films");
-			return films.size();
-		}
-
-		return 0;
-	}
+//	public int countFilmsByPlanet(String planetName) throws IOException {
+//		if (!checkConnection())
+//			throw new ConnectionException("Not connection detection");
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("user-agent",
+//				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+//		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+//
+//		ResponseEntity<String> response = restTemplate.exchange(SW_URL + "/planets?search=" + planetName,
+//				HttpMethod.GET, entity, String.class);
+//
+//		JsonNode root = new ObjectMapper().readTree(response.getBody());
+//
+//		if (root != null && root.get("count").asLong() > 0) {
+//			JsonNode results = root.get("results");
+//			JsonNode planet = results.get(0);
+//			JsonNode films = planet.get("films");
+//			return films.size();
+//		}
+//
+//		return 0;
+//	}
 	
 	
 	

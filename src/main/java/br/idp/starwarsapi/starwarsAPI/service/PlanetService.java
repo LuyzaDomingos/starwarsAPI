@@ -15,7 +15,7 @@ import br.idp.starwarsapi.starwarsAPI.exception.PlanetDuplicateException;
 import br.idp.starwarsapi.starwarsAPI.exception.PlanetInvalidAtribute;
 import br.idp.starwarsapi.starwarsAPI.exception.PlanetNotFoundException;
 import br.idp.starwarsapi.starwarsAPI.model.Planet;
-import br.idp.starwarsapi.starwarsAPI.model.SwApiPlanet;
+
 import br.idp.starwarsapi.starwarsAPI.repository.PlanetRepository;
 
 
@@ -50,14 +50,14 @@ public class PlanetService {
 	
 	public Planet createPlanet(Planet planetCreate) throws PlanetNotFoundException, PlanetInvalidAtribute, IOException {
 		
-		if(Stream.of(planetCreate,planetCreate.getNamePlanet()).anyMatch(Objects::isNull) ||planetCreate.getNamePlanet().contentEquals("")) {
+		if(Stream.of(planetCreate,planetCreate.getName()).anyMatch(Objects::isNull) ||planetCreate.getName().contentEquals("")) {
 			throw new PlanetInvalidAtribute("Planet not provided in the request");
 		}
 		
-		if(planetRepository.findByName(planetCreate.getNamePlanet())!=null) {
+		if(planetRepository.findByName(planetCreate.getName())!=null) {
 			throw new PlanetDuplicateException("Planet name already exists.");
 		}
-		planetCreate.setNumberFilms(swApiService.countFilmsByPlanet(planetCreate.getNamePlanet()));
+//		planetCreate.setNumberFilms(swApiService.countFilmsByPlanet(planetCreate.getName()));
 		return planetRepository.save(planetCreate);
 		
 	}
