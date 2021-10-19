@@ -5,7 +5,7 @@ import java.net.URLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +26,8 @@ public class SwApiService {
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
 
 	private String swap_url = "https://swapi.co/api";
-
+	
+	@Cacheable(value = "getSwapiPlanetsName")
 	public SwApiPlanet getSwapiPlanetsName(String name) throws ConnectionException, PlanetNotFoundException {
 		log.info("Acessando api para buscar planetas pelo nome...");
 
@@ -46,6 +47,7 @@ public class SwApiService {
 		throw new PlanetNotFoundException("No such planet on the star wars api with this name");
 	}
 
+	@Cacheable(value = "getSwapiPlanetsId")
 	public SwApiPlanet getSwapiPlanetsId(Long id) throws ConnectionException, PlanetNotFoundException {
 		log.info("Acessando api para buscar planetas pelo id...");
 

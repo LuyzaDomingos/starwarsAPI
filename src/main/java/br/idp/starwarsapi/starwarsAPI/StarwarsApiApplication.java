@@ -16,7 +16,8 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
+@EnableCaching
 public class StarwarsApiApplication {
 
 	public static void main(String[] args) {

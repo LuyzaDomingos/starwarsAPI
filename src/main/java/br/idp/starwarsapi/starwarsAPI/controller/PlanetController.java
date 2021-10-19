@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +55,9 @@ public class PlanetController {
 
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
 
+	
 	@GetMapping
+	@Cacheable(value = "listaDePlanetas")
 	public ResponseEntity<?> listAll() throws ConnectionException, PlanetNotFoundException {
 		log.info("Listando todos os planetas...");
 		List<Planet> planets = planetRepository.findAll();
@@ -103,6 +106,7 @@ public class PlanetController {
 
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = "listaDePlanetas", allEntries = true)
 	public ResponseEntity<?> create(@RequestBody @Valid Planet planet, UriComponentsBuilder uriComponentsBuilder) {
 		log.info("criando um planeta...");
 
@@ -129,6 +133,7 @@ public class PlanetController {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaDePlanetas", allEntries = true)
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UpdatePlanetForm updateForm){
 		log.info("atualizando um planeta...");
 		Optional<Planet> optional = planetRepository.findById(id);
@@ -152,6 +157,7 @@ public class PlanetController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaDePlanetas", allEntries = true)
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		log.info("excuindo um planeta...");
 		Optional<Planet> planet = planetRepository.findById(id);
