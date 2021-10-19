@@ -20,5 +20,14 @@ public class SwApiPlanet {
 	public void setFilms(String[] films) {
 		this.films = films;
 	}
+	
+	public Integer getFilmsCount() {
+		if(this.films==null) {
+			return 0;
+		}
+		else {
+			return this.films.length;
+		}
+	}
 
 }

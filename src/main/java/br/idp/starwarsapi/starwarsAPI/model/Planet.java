@@ -26,7 +26,7 @@ public class Planet {
 	private String terrain;
 
 	
-//	private Integer numberFilms;
+	private Integer numberFilms;
 
 	public Planet() {
 	}
@@ -94,12 +94,12 @@ public class Planet {
 		this.terrain = terrain;
 	}
 
-//	public Integer getNumberFilms() {
-//		return numberFilms;
-//	}
-//
-//	public void setNumberFilms(Integer numberFilms) {
-//		this.numberFilms = numberFilms;
-//	}
+	public Integer getNumberFilms() {
+		return numberFilms;
+	}
+
+	public void setNumberFilms(Integer numberFilms) {
+		this.numberFilms = numberFilms;
+	}
 
 }

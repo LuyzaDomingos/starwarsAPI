@@ -1,9 +1,15 @@
 package br.idp.starwarsapi.starwarsAPI.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlanetSearch {
 
 	private Integer count;
-	private Planet[] results;
+	private SwApiPlanet[] results;
+
 
 	public Integer getCount() {
 		return count;
@@ -13,11 +19,11 @@ public class PlanetSearch {
 		this.count = count;
 	}
 
-	public Planet[] getResults() {
+	public SwApiPlanet[] getResults() {
 		return results;
 	}
 
-	public void setResults(Planet[] results) {
+	public void setResults(SwApiPlanet[] results) {
 		this.results = results;
 	}
 

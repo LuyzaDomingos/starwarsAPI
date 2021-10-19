@@ -1,80 +1,122 @@
 package br.idp.starwarsapi.starwarsAPI.service;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import java.util.Arrays;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import br.idp.starwarsapi.starwarsAPI.controller.PlanetController;
 import br.idp.starwarsapi.starwarsAPI.exception.ConnectionException;
 import br.idp.starwarsapi.starwarsAPI.exception.PlanetNotFoundException;
-import br.idp.starwarsapi.starwarsAPI.model.Planet;
+
 import br.idp.starwarsapi.starwarsAPI.model.PlanetSearch;
 import br.idp.starwarsapi.starwarsAPI.model.SwApiPlanet;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SwApiService {
 
+	private RestTemplate restTemplate = new RestTemplate();
+
+	Logger log = LoggerFactory.getLogger(PlanetController.class);
+
+	private String swap_url = "https://swapi.co/api";
+
+	public SwApiPlanet getSwapiPlanetsName(String name) throws ConnectionException, PlanetNotFoundException {
+		log.info("Acessando api para buscar planetas pelo nome...");
+
+		if (!checkConnection()) {
+			throw new ConnectionException("Not connection detection");
+		}
+
+		String SW_URL = "https://swapi.co/api/planets?search=" + name;
+
+		PlanetSearch planetSearch = restTemplate.getForObject(SW_URL, PlanetSearch.class);
+
+		for (SwApiPlanet swApiPlanet : planetSearch.getResults()) {
+			if (swApiPlanet.getName().equals(name)) {
+				return swApiPlanet;
+			}
+		}
+		throw new PlanetNotFoundException("No such planet on the star wars api with this name");
+	}
+
+	public SwApiPlanet getSwapiPlanetsId(Long id) throws ConnectionException, PlanetNotFoundException {
+		log.info("Acessando api para buscar planetas pelo id...");
+
+		if (!checkConnection()) {
+			throw new ConnectionException("Not connection detection");
+		}
+
+		String SW_URL = "https://swapi.co/api/planets/" + id;
+
+		return restTemplate.getForObject(SW_URL, SwApiPlanet.class);
+
+	}
+
+	private boolean checkConnection() {
+		try {
+			URL url = new URL(swap_url);
+			URLConnection connection = url.openConnection();
+			connection.connect();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 //	@Autowired
-	private RestTemplate restTemplate;
+//	private RestTemplate restTemplate;
+//
 
-	private String SW_URL = "https://swapi.co/api";
+//
+//	public List<Planet> getAllPlanets() throws ConnectionException {
+//		if (!checkConnection()) {
+//			throw new ConnectionException("Conection not detected");
+//		}
+//
+//		String URL = SW_URL + "/planets/";
+//		ResponseEntity<PlanetSearch> planet = restTemplate.getForEntity(URL, PlanetSearch.class);
+//
+//		return Arrays.asList(planet.getBody().getResults());
+//	}
+//
+//	public SwApiPlanet getPlanetId(String id) {
+//		if (!checkConnection()) {
+//			throw new ConnectionException("Conection not detected");
+//		}
+//
+//		String endpointString = "https://swapi.co/api/planets/" + id;
+//		SwApiPlanet planetId = restTemplate.getForObject(endpointString, SwApiPlanet.class);
+//
+//		if (planetId == null) {
+//			throw new PlanetNotFoundException("No planet on the Api! Check if 'id' is correct.");
+//		}
+//		return planetId;
+//	}
+//	
+//	
+//
+//	public Planet getPlanetByName(String name) throws ConnectionException, PlanetNotFoundException {
+//		if (!checkConnection()) {
+//			throw new ConnectionException("Conection not detected");
+//		}
+//
+//		String URL = SW_URL + "/planets?search=" + name;
+//		Planet planetByName = restTemplate.getForObject(URL, Planet.class);
+//
+//		if (planetByName == null) {
+//			throw new PlanetNotFoundException("No planet on the Api! Check if the 'name' is correct.");
+//		}
+//		return planetByName;
+//
+//	}
 
-	public List<Planet> getAllPlanets() throws ConnectionException {
-		if (!checkConnection()) {
-			throw new ConnectionException("Conection not detected");
-		}
-
-		String URL = SW_URL + "/planets/";
-		ResponseEntity<PlanetSearch> planet = restTemplate.getForEntity(URL, PlanetSearch.class);
-
-		return Arrays.asList(planet.getBody().getResults());
-	}
-
-	public Planet getPlanetById(String id) throws ConnectionException, PlanetNotFoundException {
-		if (!checkConnection()) {
-			throw new ConnectionException("Conection not detected");
-		}
-
-		String URL = SW_URL + "/planets/" + id;
-		Planet planetById = restTemplate.getForObject(URL, Planet.class);
-
-		if (planetById == null) {
-			throw new PlanetNotFoundException("No planet on the Api! Check if 'id' is correct.");
-		}
-		return planetById;
-
-	}
-
-	public Planet getPlanetByName(String name) throws ConnectionException, PlanetNotFoundException {
-		if (!checkConnection()) {
-			throw new ConnectionException("Conection not detected");
-		}
-
-		String URL = SW_URL + "/planets?search=" + name;
-		Planet planetByName = restTemplate.getForObject(URL, Planet.class);
-
-		if (planetByName == null) {
-			throw new PlanetNotFoundException("No planet on the Api! Check if the 'name' is correct.");
-		}
-		return planetByName;
-
-	}
-	
 //	public int countFilmsByPlanet(String planetName) throws IOException {
 //		if (!checkConnection())
 //			throw new ConnectionException("Not connection detection");
@@ -98,19 +140,5 @@ public class SwApiService {
 //
 //		return 0;
 //	}
-	
-	
-	
-
-	private boolean checkConnection() {
-		try {
-			URL url = new URL(SW_URL);
-			URLConnection connection = url.openConnection();
-			connection.connect();
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
 
 }
