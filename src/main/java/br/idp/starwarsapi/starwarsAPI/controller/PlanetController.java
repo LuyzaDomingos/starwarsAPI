@@ -9,22 +9,25 @@ import java.util.stream.Stream;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.h2.command.dml.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.idp.starwarsapi.starwarsAPI.config.validation.ErrorForm;
+import br.idp.starwarsapi.starwarsAPI.controller.form.UpdatePlanetForm;
 import br.idp.starwarsapi.starwarsAPI.exception.ConnectionException;
 
 import br.idp.starwarsapi.starwarsAPI.exception.PlanetNotFoundException;
@@ -106,21 +109,47 @@ public class PlanetController {
 		if (Stream.of(planet, planet.getName()).anyMatch(Objects::isNull) || planet.getName().contentEquals("")
 				|| planet.getClimate().contentEquals("") || planet.getTerrain().contentEquals("")) {
 
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new ErrorForm("name or climate or terrain", "Planet needs description"));
 		}
 
 		if (planetRepository.findByName(planet.getName()) != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorForm("name", "Planet name already exists"));
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(new ErrorForm("name", "Planet name already exists"));
 		}
 
 		planetRepository.save(planet);
 
-		URI uri = uriComponentsBuilder.path("/planets/{id}").buildAndExpand(planet.getId()).toUri();
+		URI uri = uriComponentsBuilder.path("/planets/{id}")
+				.buildAndExpand(planet.getId()).toUri();
 
 		return ResponseEntity.created(uri).body(planet);
 	}
-
+	
+	
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UpdatePlanetForm updateForm){
+		log.info("atualizando um planeta...");
+		Optional<Planet> optional = planetRepository.findById(id);
+		
+		if(!optional.isPresent()){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorForm("id", "The planet you are looking for doesn't exist"));
+		}
+		
+//		if(optional.isEmpty()){
+//			//Planet planet = updateForm.updatePlanet(id, planetRepository);
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//					.body(new ErrorForm("name or climate or terrain", "Planet needs description"));
+//		}
+		
+		Planet planet = updateForm.updatePlanet(id, planetRepository);
+		return ResponseEntity.ok(planet);
+			
+	}
+	
+	
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -130,7 +159,8 @@ public class PlanetController {
 			planetRepository.deleteById(id);
 			return ResponseEntity.ok().build();
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorForm("id", "Id dont exist"));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ErrorForm("id", "Id dont exist"));
 	}
 	
 	
