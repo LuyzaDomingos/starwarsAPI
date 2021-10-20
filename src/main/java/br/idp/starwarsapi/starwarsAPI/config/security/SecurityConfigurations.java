@@ -12,6 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.idp.starwarsapi.starwarsAPI.repository.UserRepository;
+
+
 
 @EnableWebSecurity
 @Configuration
@@ -19,6 +24,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	
 	
@@ -41,17 +52,21 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
 			http.authorizeRequests()
 			.antMatchers(HttpMethod.GET,"/planets").permitAll()
-			.antMatchers(HttpMethod.GET,"/planets/*").permitAll()
+			.antMatchers(HttpMethod.GET,"/planets/id/*").permitAll()
 			.antMatchers(HttpMethod.POST,"/auth").permitAll()
 			.anyRequest().authenticated()
 			.and().csrf().disable()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and().addFilterBefore(new AuthenticationTokenFilter(tokenService,userRepository),
+					UsernamePasswordAuthenticationFilter.class);
 			
 		}
 		
 		// configuração de recursos estaticos(js,css,img....)
 		@Override
 		public void configure(WebSecurity web) throws Exception {
+			web.ignoring()
+	        .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 			
 		}
 
