@@ -2,7 +2,6 @@ package br.idp.starwarsapi.starwarsAPI;
 
 import java.io.IOException;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,19 +14,22 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @SpringBootApplication
 //@EnableAutoConfiguration
 @EnableCaching
+@EnableSwagger2
 public class StarwarsApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StarwarsApiApplication.class, args);
 	}
-	
+
 //	@Bean
 //	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 //		RestTemplate restTemplate = builder.build();
-//		restTemplate.getInterceptors().add(addRequestHeader("User-agent", "curl/7.59.0"));
+//		restTemplate.getInterceptors().add(addRequestHeader("UserPlanet-agent", "curl/7.59.0"));
 //		return restTemplate;
 //	}
 //	@Bean
