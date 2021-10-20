@@ -9,7 +9,7 @@ public class ErrorForm {
 		this.field = field;
 		this.message = message;
 	}
-	
+
 	public String getField() {
 		return field;
 	}

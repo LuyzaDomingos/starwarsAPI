@@ -11,12 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 import br.idp.starwarsapi.starwarsAPI.model.UserPlanet;
 import br.idp.starwarsapi.starwarsAPI.repository.UserRepository;
 
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
-	
+
 	private TokenService tokenService;
 	private UserRepository userRepository;
 
@@ -30,9 +29,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String token = recoverToken(request);
-	
+
 		boolean valid = tokenService.isTokenValid(token);
-//		System.out.println(valid);
 
 		if (valid) {
 			autenticarCliente(token);

@@ -1,7 +1,7 @@
 package br.idp.starwarsapi.starwarsAPI.controller.dto;
 
 public class TokenDto {
-	
+
 	private String token;
 	private String type;
 

@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/planetscache")
 public class CacheController {
-	
+
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
-	
+
 	@DeleteMapping
 	@Transactional
 	@Caching(evict = { @CacheEvict(value = "getSwapiPlanetsName", allEntries = true),
 			@CacheEvict(value = "getSwapiPlanetsId", allEntries = true) })
-	public ResponseEntity<?> cacheClear(){
+	public ResponseEntity<?> cacheClear() {
 		log.info("Limpando cache....");
 		return ResponseEntity.ok().build();
-		
+
 	}
 
 }

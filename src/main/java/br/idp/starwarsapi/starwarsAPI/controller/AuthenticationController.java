@@ -17,29 +17,24 @@ import br.idp.starwarsapi.starwarsAPI.config.security.TokenService;
 import br.idp.starwarsapi.starwarsAPI.controller.dto.TokenDto;
 import br.idp.starwarsapi.starwarsAPI.controller.form.LoginForm;
 
-
-
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
-	
+
 	@Autowired
 	private AuthenticationManager authManager;
-	
+
 	@Autowired
 	private TokenService tokenService;
-	
-	
+
 	@PostMapping
-	public ResponseEntity<?> authenticate(@RequestBody @Valid LoginForm form){
+	public ResponseEntity<?> authenticate(@RequestBody @Valid LoginForm form) {
 		UsernamePasswordAuthenticationToken dadosLogin = form.convert();
-		
+
 		try {
 			Authentication authentication = authManager.authenticate(dadosLogin);
 			String token = tokenService.generateToken(authentication);
 			return ResponseEntity.ok(new TokenDto(token, "Bearer"));
-//			System.out.println(token);
-//			return ResponseEntity.ok().build();
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}

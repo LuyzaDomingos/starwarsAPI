@@ -26,7 +26,7 @@ public class SwApiService {
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
 
 	private String swap_url = "https://swapi.co/api";
-	
+
 	@Cacheable(value = "getSwapiPlanetsName")
 	public SwApiPlanet getSwapiPlanetsName(String name) throws ConnectionException, PlanetNotFoundException {
 		log.info("Acessando api para buscar planetas pelo nome...");
@@ -35,7 +35,7 @@ public class SwApiService {
 			throw new ConnectionException("Not connection detection");
 		}
 
-		String SW_URL = "https://swapi.co/api/planets?search=" + name;
+		String SW_URL = "https://swapi.dev/api/planets?search=" + name;
 
 		PlanetSearch planetSearch = restTemplate.getForObject(SW_URL, PlanetSearch.class);
 
@@ -55,9 +55,13 @@ public class SwApiService {
 			throw new ConnectionException("Not connection detection");
 		}
 
-		String SW_URL = "https://swapi.co/api/planets/" + id;
+		if (id <= 60) {
+			String SW_URL = "https://swapi.dev/api/planets/" + id;
 
-		return restTemplate.getForObject(SW_URL, SwApiPlanet.class);
+			return restTemplate.getForObject(SW_URL, SwApiPlanet.class);
+
+		}
+		throw new PlanetNotFoundException("Planet not exist in the API");
 
 	}
 
@@ -71,76 +75,5 @@ public class SwApiService {
 			return false;
 		}
 	}
-
-//	@Autowired
-//	private RestTemplate restTemplate;
-//
-
-//
-//	public List<Planet> getAllPlanets() throws ConnectionException {
-//		if (!checkConnection()) {
-//			throw new ConnectionException("Conection not detected");
-//		}
-//
-//		String URL = SW_URL + "/planets/";
-//		ResponseEntity<PlanetSearch> planet = restTemplate.getForEntity(URL, PlanetSearch.class);
-//
-//		return Arrays.asList(planet.getBody().getResults());
-//	}
-//
-//	public SwApiPlanet getPlanetId(String id) {
-//		if (!checkConnection()) {
-//			throw new ConnectionException("Conection not detected");
-//		}
-//
-//		String endpointString = "https://swapi.co/api/planets/" + id;
-//		SwApiPlanet planetId = restTemplate.getForObject(endpointString, SwApiPlanet.class);
-//
-//		if (planetId == null) {
-//			throw new PlanetNotFoundException("No planet on the Api! Check if 'id' is correct.");
-//		}
-//		return planetId;
-//	}
-//	
-//	
-//
-//	public Planet getPlanetByName(String name) throws ConnectionException, PlanetNotFoundException {
-//		if (!checkConnection()) {
-//			throw new ConnectionException("Conection not detected");
-//		}
-//
-//		String URL = SW_URL + "/planets?search=" + name;
-//		Planet planetByName = restTemplate.getForObject(URL, Planet.class);
-//
-//		if (planetByName == null) {
-//			throw new PlanetNotFoundException("No planet on the Api! Check if the 'name' is correct.");
-//		}
-//		return planetByName;
-//
-//	}
-
-//	public int countFilmsByPlanet(String planetName) throws IOException {
-//		if (!checkConnection())
-//			throw new ConnectionException("Not connection detection");
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.add("user-agent",
-//				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-//		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-//
-//		ResponseEntity<String> response = restTemplate.exchange(SW_URL + "/planets?search=" + planetName,
-//				HttpMethod.GET, entity, String.class);
-//
-//		JsonNode root = new ObjectMapper().readTree(response.getBody());
-//
-//		if (root != null && root.get("count").asLong() > 0) {
-//			JsonNode results = root.get("results");
-//			JsonNode planet = results.get(0);
-//			JsonNode films = planet.get("films");
-//			return films.size();
-//		}
-//
-//		return 0;
-//	}
 
 }

@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.h2.command.dml.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,8 @@ import br.idp.starwarsapi.starwarsAPI.exception.ConnectionException;
 
 import br.idp.starwarsapi.starwarsAPI.exception.PlanetNotFoundException;
 import br.idp.starwarsapi.starwarsAPI.model.Planet;
-
+import br.idp.starwarsapi.starwarsAPI.model.SwApiPlanet;
 import br.idp.starwarsapi.starwarsAPI.repository.PlanetRepository;
-import br.idp.starwarsapi.starwarsAPI.service.PlanetService;
 import br.idp.starwarsapi.starwarsAPI.service.SwApiService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,33 +48,30 @@ public class PlanetController {
 	@Autowired
 	private PlanetRepository planetRepository;
 
-	@Autowired
-	private PlanetService planetService;
-
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
 
-	
 	@GetMapping
 	@Cacheable(value = "listaDePlanetas")
 	public ResponseEntity<?> listAll() throws ConnectionException, PlanetNotFoundException {
 		log.info("Listando todos os planetas...");
 		List<Planet> planets = planetRepository.findAll();
-//		for(Planet planet:planets) {
+//		for (Planet planet : planets) {
 //			SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
 //			planet.setNumberFilms(swApiPlanet.getFilmsCount());
 //		}
-//		
+
 		return ResponseEntity.ok(planets);
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<?> listId(@PathVariable long id) {
+	@Cacheable(value = "listaDePlanetas")
+	public ResponseEntity<?> listId(@PathVariable long id){
 		log.info("Listando todos os planetas pelo id...");
 
 		Planet planet = planetRepository.findById(id);
 //		SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
 //		planet.setNumberFilms(swApiPlanet.getFilmsCount());
-
+	
 		if (planet == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ErrorForm("id", "No planet was found with this id  = " + id));
@@ -86,6 +81,7 @@ public class PlanetController {
 	}
 
 	@GetMapping("/name/{name}")
+	@Cacheable(value = "listaDePlanetas")
 	public ResponseEntity<?> listName(@PathVariable String name) {
 		log.info("Listando todos os planetas pelo nome...");
 		Planet planet = planetRepository.findByName(name);
@@ -97,10 +93,10 @@ public class PlanetController {
 
 		return ResponseEntity.ok(planet);
 	}
-	
-	
+
 	@GetMapping("/swapi/{id}")
-	public ResponseEntity<?> listSwapiPlanetsId(@PathVariable Long id) throws ConnectionException{
+	@Cacheable(value = "listaDePlanetas")
+	public ResponseEntity<?> listSwapiPlanetsId(@PathVariable Long id) throws ConnectionException {
 		return ResponseEntity.ok(swApiService.getSwapiPlanetsId(id));
 	}
 
@@ -118,19 +114,16 @@ public class PlanetController {
 		}
 
 		if (planetRepository.findByName(planet.getName()) != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(new ErrorForm("name", "Planet name already exists"));
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorForm("name", "Planet name already exists"));
 		}
 
 		planetRepository.save(planet);
 
-		URI uri = uriComponentsBuilder.path("/planets/{id}")
-				.buildAndExpand(planet.getId()).toUri();
+		URI uri = uriComponentsBuilder.path("/planets/{id}").buildAndExpand(planet.getId()).toUri();
 
 		return ResponseEntity.created(uri).body(planet);
 	}
-	
-	
+
 	@PutMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaDePlanetas", allEntries = true)
@@ -143,18 +136,11 @@ public class PlanetController {
 					.body(new ErrorForm("id", "The planet you are looking for doesn't exist"));
 		}
 		
-//		if(optional.isEmpty()){
-//			//Planet planet = updateForm.updatePlanet(id, planetRepository);
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//					.body(new ErrorForm("name or climate or terrain", "Planet needs description"));
-//		}
-		
 		Planet planet = updateForm.updatePlanet(id, planetRepository);
 		return ResponseEntity.ok(planet);
 			
 	}
-	
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaDePlanetas", allEntries = true)
@@ -165,10 +151,7 @@ public class PlanetController {
 			planetRepository.deleteById(id);
 			return ResponseEntity.ok().build();
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(new ErrorForm("id", "Id dont exist"));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorForm("id", "Id dont exist"));
 	}
-	
-	
 
 }
