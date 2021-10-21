@@ -7,10 +7,10 @@ public class SwApiPlanet {
 	private String climate;
 	
 	private String terrain;
-
-	private String[] films;
 	
 	private String[] residents;
+
+	private String[] films;
 	
 	
 	public String getName() {

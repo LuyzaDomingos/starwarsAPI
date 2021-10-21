@@ -55,10 +55,10 @@ public class PlanetController {
 	public ResponseEntity<?> listAll() throws ConnectionException, PlanetNotFoundException {
 		log.info("Listando todos os planetas...");
 		List<Planet> planets = planetRepository.findAll();
-//		for (Planet planet : planets) {
-//			SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
-//			planet.setNumberFilms(swApiPlanet.getFilmsCount());
-//		}
+		for (Planet planet:planets) {
+			SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
+			planet.setNumberFilms(swApiPlanet.getFilmsCount());
+		}
 
 		return ResponseEntity.ok(planets);
 	}
