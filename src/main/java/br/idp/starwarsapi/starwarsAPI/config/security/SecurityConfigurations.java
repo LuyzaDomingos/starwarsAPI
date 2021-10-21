@@ -47,8 +47,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/planets").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/*").permitAll()
-//				.antMatchers(HttpMethod.GET, "/planets/name/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/planets/name/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi").permitAll()
+//				.antMatchers(HttpMethod.POST, "/planets").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi/name/*").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
