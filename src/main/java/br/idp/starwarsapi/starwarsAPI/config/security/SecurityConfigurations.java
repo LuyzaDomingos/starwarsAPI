@@ -3,6 +3,7 @@ package br.idp.starwarsapi.starwarsAPI.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +19,7 @@ import br.idp.starwarsapi.starwarsAPI.repository.UserRepository;
 
 @EnableWebSecurity
 @Configuration
+@Profile("dev")
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -47,9 +49,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/planets").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/planets/id/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/name/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi").permitAll()
-//				.antMatchers(HttpMethod.POST, "/planets").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/planets/swapi/name/*").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
