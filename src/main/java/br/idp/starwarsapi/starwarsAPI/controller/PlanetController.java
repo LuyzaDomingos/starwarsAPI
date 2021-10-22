@@ -1,5 +1,6 @@
 package br.idp.starwarsapi.starwarsAPI.controller;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -52,13 +53,9 @@ public class PlanetController {
 
 	@GetMapping
 	@Cacheable(value = "listaDePlanetas")
-	public ResponseEntity<?> listAll() throws ConnectionException, PlanetNotFoundException {
+	public ResponseEntity<?> listAll() throws PlanetNotFoundException, IOException {
 		log.info("Listando todos os planetas...");
 		List<Planet> planets = planetRepository.findAll();
-		for (Planet planet:planets) {
-			SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
-			planet.setNumberFilms(swApiPlanet.getFilmsCount());
-		}
 
 		return ResponseEntity.ok(planets);
 	}
@@ -69,9 +66,7 @@ public class PlanetController {
 		log.info("Listando todos os planetas pelo id...");
 
 		Planet planet = planetRepository.findById(id);
-//		SwApiPlanet swApiPlanet = swApiService.getSwapiPlanetsName(planet.getName());
-//		planet.setNumberFilms(swApiPlanet.getFilmsCount());
-	
+
 		if (planet == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ErrorForm("id", "No planet was found with this id  = " + id));
@@ -103,7 +98,7 @@ public class PlanetController {
 	@PostMapping
 	@Transactional
 	@CacheEvict(value = "listaDePlanetas", allEntries = true)
-	public ResponseEntity<?> create(@RequestBody @Valid Planet planet, UriComponentsBuilder uriComponentsBuilder) {
+	public ResponseEntity<?> create(@RequestBody @Valid Planet planet, UriComponentsBuilder uriComponentsBuilder) throws IOException {
 		log.info("criando um planeta...");
 
 		if (Stream.of(planet, planet.getName()).anyMatch(Objects::isNull) || planet.getName().contentEquals("")
@@ -116,6 +111,8 @@ public class PlanetController {
 		if (planetRepository.findByName(planet.getName()) != null) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorForm("name", "Planet name already exists"));
 		}
+		
+		planet.setNumberFilms(swApiService.countFilmsByPlanet(planet.getName()));
 
 		planetRepository.save(planet);
 
