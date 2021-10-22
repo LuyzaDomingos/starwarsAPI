@@ -92,7 +92,7 @@ class PlanetControllerTest {
 	
 	}
 	
-			private String toJson(Object obj) {
+	private String toJson(Object obj) {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
 		} catch (Exception e) {

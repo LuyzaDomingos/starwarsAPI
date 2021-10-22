@@ -113,6 +113,7 @@ public class PlanetController {
 		}
 		
 		planet.setNumberFilms(swApiService.countFilmsByPlanet(planet.getName()));
+		planet.setNumberOfResidents(swApiService.countResidentsByPlanet(planet.getName()));
 
 		planetRepository.save(planet);
 

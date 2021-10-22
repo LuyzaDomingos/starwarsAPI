@@ -1,8 +1,5 @@
 package br.idp.starwarsapi.starwarsAPI.model;
 
-
-
-
 public class PlanetSearch {
 
 	private Integer count;
