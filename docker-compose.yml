@@ -12,8 +12,7 @@ services:
     networks:
       - star-wars-network
     
-   
-  quotation-management:
+  star-wars:
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -26,6 +25,8 @@ services:
       - MYSQL_CONTAINER=mysql
     networks:
       - star-wars-network
+	depends_on: 
+      - "mysql"
     
       
 networks:
