@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,10 +60,10 @@ class PlanetControllerTest {
 	}
 	
 	@Test
-	public void creatingPlanetThatAlreadyExistingAndShouldReturnConflict409() throws Exception{
+	public void creatingPlanetThatAlreadyExistingAndShouldReturnBadRequest400() throws Exception{
 		URI uri = new URI("/planets");
 		mockMvc.perform(MockMvcRequestBuilders.post(uri).content(toJson(mockPlanet))
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isConflict());
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	
 	}
 	
@@ -73,7 +74,6 @@ class PlanetControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	
 	}
-	
 	
 	
 	@Test

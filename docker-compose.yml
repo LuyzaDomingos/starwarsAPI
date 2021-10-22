@@ -17,7 +17,7 @@ services:
       dockerfile: ./Dockerfile
       context: .
     image: luyza/starwars
-    container_name: starwarsAPI
+    container_name: star-wars
     ports:
       - "8081:8081"
     environment: 
@@ -25,9 +25,9 @@ services:
       - MYSQL_CONTAINER=mysql
     networks:
       - star-wars-network
-	depends_on: 
+    depends_on:
       - "mysql"
-    
+
       
 networks:
   star-wars-network:

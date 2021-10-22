@@ -52,33 +52,6 @@ public class SwApiService {
 	
 	
 
-//	@Cacheable(value = "getSwapiPlanetsName")
-//	public Planet getSwapiPlanetsName(String name) throws ConnectionException, PlanetNotFoundException {
-//		log.info("Acessando api para buscar planetas pelo nome...");
-//
-//		if (!checkConnection()) {
-//			throw new ConnectionException("Not connection detection");
-//		}
-//		
-//		String swUrlName = sw_url_name + name;
-//
-//		Planet planetSearch = restTemplate.getForObject(swUrlName, Planet.class);
-//		
-//		if(planetSearch == null) {
-//			throw new PlanetNotFoundException("No such planet on the star wars api with this name");
-//		}
-//
-//		return planetSearch;
-		
-//		for (SwApiPlanet swApiPlanet : planetSearch.getResults()) {
-//			if (swApiPlanet.getName().equals(name)) {
-//				System.out.println("planetas registrados = "+swApiPlanet.getName() + " planeta buscado da api = " + planetSearch.getResults());
-//				return swApiPlanet;
-//			}
-//		}
-//		throw new PlanetNotFoundException("No such planet on the star wars api with this name");
-//	}
-
 	/**
 	 * Get planets from swapi from the id
 	 * @param id
