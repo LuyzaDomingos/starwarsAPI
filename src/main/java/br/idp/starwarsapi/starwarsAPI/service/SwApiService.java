@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SwApiService {
 
 	private RestTemplate restTemplate = new RestTemplate();
+	private HttpHeaders headers = new HttpHeaders();
 
 	Logger log = LoggerFactory.getLogger(PlanetController.class);
 
@@ -42,6 +43,12 @@ public class SwApiService {
 	
 	@Value("${swapi.BASE_URL}")
 	private String sw_base;
+	
+	@Value("${url.headers.value}")
+	private String headerValue;
+	
+	@Value("${url.headers.name}")
+	private String headerName;
 	
 	
 
@@ -72,13 +79,20 @@ public class SwApiService {
 //		throw new PlanetNotFoundException("No such planet on the star wars api with this name");
 //	}
 
+	/**
+	 * Get planets from swapi from the id
+	 * @param id
+	 * @return
+	 * @throws ConnectionException
+	 * @throws PlanetNotFoundException if planet dont exist
+	 */
 	@Cacheable(value = "getSwapiPlanetsId")
 	public SwApiPlanet getSwapiPlanetsId(Long id) throws ConnectionException, PlanetNotFoundException {
 		log.info("Acessando api para buscar planetas pelo id...");
 
-		if (!checkConnection()) {
+		if (!checkConnection()) 
 			throw new ConnectionException("Not connection detection");
-		}
+	
 
 		if (id <= 60) {
 			String swUrl = sw_url + id;
@@ -95,9 +109,8 @@ public class SwApiService {
 		if (!checkConnection())
 			throw new ConnectionException("Not connection detection");
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("user-agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+		
+		headers.add(headerName,headerValue);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
 		ResponseEntity<String> response = restTemplate.exchange(sw_url_name + planetName,
@@ -110,6 +123,29 @@ public class SwApiService {
 			JsonNode planet = results.get(0);
 			JsonNode films = planet.get("films");
 			return films.size();
+		}
+
+		return 0;
+	}
+	
+	public int countResidentsByPlanet(String planetName) throws IOException {
+		if (!checkConnection())
+			throw new ConnectionException("Not connection detection");
+
+		
+		headers.add(headerName,headerValue);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(sw_url_name + planetName,
+				HttpMethod.GET, entity, String.class);
+
+		JsonNode root = new ObjectMapper().readTree(response.getBody());
+
+		if (root != null && root.get("count").asLong() > 0) {
+			JsonNode results = root.get("results");
+			JsonNode planet = results.get(0);
+			JsonNode residents = planet.get("residents");
+			return residents.size();
 		}
 
 		return 0;
