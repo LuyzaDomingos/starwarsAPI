@@ -109,7 +109,8 @@ public class PlanetController {
 		}
 
 		if (planetRepository.findByName(planet.getName()) != null) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorForm("name", "Planet name already exists"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorForm("name", "Planet name already exists"));
+			
 		}
 		
 		planet.setNumberFilms(swApiService.countFilmsByPlanet(planet.getName()));
