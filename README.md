@@ -99,7 +99,7 @@ Ex:
 
 
 ### Documentation
-The api documentation was built using Swagger. To use the documentation at the address: http://localhost:8081/swagger-ui.html#/ it is necessary that the program is running.
+The API documentation was built using Swagger. To use the documentation at the address: http://localhost:8081/swagger-ui.html#/ it is necessary that the program is running.
 
 # :hammer_and_pick: Tools and Tecnology
 The project was developed with the following tools and technologies.
@@ -109,7 +109,17 @@ The project was developed with the following tools and technologies.
  - Docker
  - Maven
 
-# :computer::gear: SetUp/Run
+# :computer::gear: SetUp/Run - First option
+ - And you are using the Eclipse IDE, just clone the project and import it into the IDE as a Maven Project. That way it will be possible for you to explore an application.
+ - Docker/mysql/endereço
+
+
+# :computer::gear: SetUp/Run - Second option
+ - Utilzando o docker compose
+
+# :computer::gear: SetUp/Run - Configuration for both options
+
+geraração de senha; registrar banco de dados; gerar o token via o postman 
 
 
 
