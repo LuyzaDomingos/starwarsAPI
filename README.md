@@ -22,6 +22,20 @@ The API provides the following endpoints:
 - ### GET /planets/name/{name}
 **Description:** Get the planet stored in the database by the **name**. 
 
+**All these GET will return a response like this:**
+
+**Response Data:** Planet in JSON format with your information.
+```
+{
+    "id": 3,
+    "name": "Coruscant",
+    "climate": "temperate",
+    "terrain": "cityscape, mountains",
+    "numberFilms": 4,
+    "numberOfResidents": 3
+}
+```
+
 - ### POST /planets
 **Description:** Insert a planet on database.  
 **Request body:** Json containing planet name, climate and terrain.  
@@ -55,12 +69,13 @@ Ex:
 
 - ### POST /auth
 **Description:** Create an authentication token.
+
 **Request body:** Json email and password.  
 Ex: 
 ```
 {
   "email": "test@email.com",
-  "loginPassword": "1"
+  "loginPassword": "123456"
 
 }
 ```  
@@ -111,15 +126,14 @@ The project was developed with the following tools and technologies.
 
 # :computer::gear: SetUp/Run - First option
  - And you are using the Eclipse IDE, just clone the project and import it into the IDE as a Maven Project. That way it will be possible for you to explore an application.
- - Docker/mysql/endereço
+ - To run the application you must have Docker installed. So you can run the following commands: 
+ 1. docker buid -t luyza/starwars .
+ 2. docker-compose build
+ 3. docker-compose up -d
 
 
-# :computer::gear: SetUp/Run - Second option
- - Utilzando o docker compose
 
-# :computer::gear: SetUp/Run - Configuration for both options
 
-geraração de senha; registrar banco de dados; gerar o token via o postman 
 
 
 
