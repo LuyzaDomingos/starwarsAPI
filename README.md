@@ -126,10 +126,13 @@ The project was developed with the following tools and technologies.
 
 # :computer::gear: SetUp/Run - First option
  - And you are using the Eclipse IDE, just clone the project and import it into the IDE as a Maven Project. That way it will be possible for you to explore an application.
- - To run the application you must have Docker installed. So you can run the following commands: 
- 1. docker buid -t luyza/starwars .
- 2. docker-compose build
- 3. docker-compose up -d
+ - To run the application you must have Docker installed. 
+ - So you can run the following commands: 
+ 1. Import the project already cloned into eclipse as a "Maven Project".
+ 2. And then create the .jar file in "Maven build..." in "Run as".
+ 3. docker buid -t {any name}/starwars .
+ 4. docker-compose build
+ 5. docker-compose up -d
 
 
 
